@@ -1,0 +1,86 @@
+const int ledPin = 13;// the pin that the LED is attached to
+const int ledPin2 = 12;
+const int fabric = 7;
+int buttonState = 0;
+
+int incomingByte;      // a variable to read incoming serial data into
+
+void setup() {
+  // initialize serial communication:
+  Serial.begin(9600);
+  // initialize the LED pin as an output:
+  pinMode(ledPin, OUTPUT);//GREEN 
+  pinMode(ledPin2, OUTPUT);//RED
+  pinMode(fabric, INPUT);//FABRIC "BUTTON"
+}
+
+void loop() {
+  // see if there's incoming serial data:
+  if (Serial.available() > 0) {
+    // read the oldest byte in the serial buffer:
+    incomingByte = Serial.read();
+    // if it's a capital H (ASCII 72), turn on the LED:
+    if (incomingByte == 'H') {//FLASH GREEN/RED/GREEN/RED 
+      digitalWrite(ledPin, HIGH);
+      delay(500);
+      digitalWrite(ledPin, LOW);
+      delay(500);
+      digitalWrite(ledPin2, HIGH);
+      delay(500);
+      digitalWrite(ledPin2, LOW);
+      delay(500);
+      digitalWrite(ledPin, HIGH);
+      delay(500);
+      digitalWrite(ledPin, LOW);
+      delay(500);
+      digitalWrite(ledPin2, HIGH);
+      delay(500);
+      digitalWrite(ledPin2, LOW);
+      delay(3000);
+      
+      buttonState = digitalRead(fabric);
+      if(fabric == HIGH){
+        
+     digitalWrite(ledPin, HIGH);
+      delay(500);
+      digitalWrite(ledPin, LOW);
+      delay(500); 
+       digitalWrite(ledPin, HIGH);
+      delay(500);
+      digitalWrite(ledPin, LOW);
+      delay(500); }
+      
+      buttonState=digitalRead(fabric);//READ FABRIC BUTTON STATE, FLASH GREEN IF OPEN, RED IF CLOSED
+      
+      if(buttonState == HIGH) {
+     
+     digitalWrite(ledPin, HIGH);
+      delay(500);
+      digitalWrite(ledPin, LOW);
+      delay(500); 
+       digitalWrite(ledPin, HIGH);
+      delay(500);
+      digitalWrite(ledPin, LOW);
+      delay(500);   
+     
+      }   
+      
+      else {
+         digitalWrite(ledPin2, HIGH);
+      delay(500);
+      digitalWrite(ledPin2, LOW);
+      delay(500); 
+       digitalWrite(ledPin2, HIGH);
+      delay(500);
+      digitalWrite(ledPin2, LOW);
+      delay(500);
+        
+      }
+      
+    } 
+    // if it's an L (ASCII 76) turn off the LED:
+    if (incomingByte == 'L') {
+      digitalWrite(ledPin, LOW);
+    }
+  }
+}
