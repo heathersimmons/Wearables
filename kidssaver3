@@ -1,0 +1,22 @@
+int forcePin = A0;      // force sensor
+int lightPin = A1;    // light sensor
+int tempPin = A2;// tempsensor
+float temp;
+
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  temp = analogRead(tempPin);
+  temp = temp*0.488;//convert sensor reading to degrees Celsius
+  Serial.print(analogRead(forcePin));
+  Serial.print(",");
+  Serial.print(analogRead(lightPin));
+  Serial.print(",");
+  Serial.println(temp);
+  
+}
