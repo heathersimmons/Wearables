@@ -1,0 +1,102 @@
+
+
+import processing.serial.*;
+
+float forceValue = 0;        // force sensor value
+float lightValue = 0;      // light sensor value
+float tempValue = 0;       // temperature sensor value
+
+Serial myPort;
+PFont f;
+
+void setup() {
+  size(250, 200);
+  f = createFont("Arial",16,true);
+
+  // List all the available serial ports
+  println(Serial.list());
+  
+  myPort = new Serial(this, Serial.list()[22], 9600);
+  // don't generate a serialEvent() unless you get a newline character:
+  myPort.bufferUntil('\n');
+}
+
+void draw() {
+  
+  background(0);
+  textFont(f,16);                    
+  
+  if(forceValue >=350)//if force sensor pressed, indicate alarm
+{
+  fill(255,0,0);
+  text("Pressed",10,120);
+  text("Alarm!",10,145);
+  
+} 
+else {
+ fill(0,255,0);
+ text("OK",10,120); 
+}
+rect(10,50,40,40);
+
+stroke(0); 
+
+if(lightValue <=250)//if it's getting dark, indicate alarm
+{
+  fill(255,0,0);
+  text("Getting",80,120);
+  text("Dark!",80,145);
+} 
+else {
+ fill(0,255,0); 
+ text("OK",80,120);
+}
+
+rect(80,50,40,40);
+
+stroke(0); 
+//fill(0,255,0);
+
+if(tempValue <=20)//if it's getting cold, indicate alarm condition (calibrated for indoor conditions for demo purposes)
+{
+  fill(255,0,0);
+  text("Getting",150,120);
+  text("Cold!",150,145);
+} 
+else {
+fill(0,255,0);
+text("OK",150,120); 
+}
+
+rect(150,50,40,40);
+ 
+ }
+  
+
+void serialEvent(Serial myPort) { 
+  // get the ASCII string:
+  String inString = myPort.readStringUntil('\n');
+
+  if (inString != null) {
+    // trim off any whitespace:
+    inString = trim(inString);
+    // split the string on the commas and convert the 
+    // resulting substrings into an integer array:
+    float[] sensorData = float(split(inString, ","));
+    // if the array has at least three elements, you know
+    // you got the whole thing.  
+    
+    if (sensorData.length >=3) {
+      //print the values
+      print(sensorData[0]);
+      print(",");
+      print(sensorData[1]);
+      print(",");
+      println(sensorData[2]);
+      // map them to the range 0-255:
+     //forceValue = map(colors[0], 0, 1023, 0, 1023);
+   //lightValue = map(colors[1], 0, 1023, 0, 1023);
+   //tempValue = map(colors[2], 0, 1023, 0, 1023);
+    }
+  }
+}
