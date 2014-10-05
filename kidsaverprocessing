@@ -41,7 +41,7 @@ rect(10,50,40,40);
 
 stroke(0); 
 
-if(lightValue <=250)//if it's getting dark, indicate alarm
+if(lightValue <=350)//if it's getting dark, indicate alarm
 {
   fill(255,0,0);
   text("Getting",80,120);
@@ -93,10 +93,10 @@ void serialEvent(Serial myPort) {
       print(sensorData[1]);
       print(",");
       println(sensorData[2]);
-      // map them to the range 0-255:
-     //forceValue = map(colors[0], 0, 1023, 0, 1023);
-   //lightValue = map(colors[1], 0, 1023, 0, 1023);
-   //tempValue = map(colors[2], 0, 1023, 0, 1023);
+      // assign variable values based on sensor input:
+    forceValue = sensorData[0];
+   lightValue = sensorData[1];
+   tempValue = sensorData[2];
     }
   }
 }
