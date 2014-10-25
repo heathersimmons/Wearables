@@ -1,0 +1,75 @@
+//Modified from simple face detection code by Daniel Shiffman and LiveCamTest example code in Processing 
+import gab.opencv.*;//face detection library
+import processing.video.*;//needed to run the camera
+import java.awt.*;//needed for Java rectangles
+import ddf.minim.spi.*;
+import ddf.minim.signals.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
+
+
+Minim minim;//sound object
+AudioPlayer player;//audio player object
+Capture video;//camera object
+OpenCV opencv;//face detection object
+Rectangle[] faces;//array of faces found
+PImage img;//static image
+
+void setup() {
+  size(640, 480);
+
+  img = loadImage("witch.jpg");//load witch image
+  video = new Capture(this, 640/2, 480/2);//create on-board webcam object
+  opencv = new OpenCV(this, 640/2, 480/2);//create face detection object
+  opencv.loadCascade(OpenCV.CASCADE_FRONTALFACE);//detect whole face as opposed to just eye or nose  
+  video.start();
+  minim=new Minim(this);//create new sound object
+  player = minim.loadFile("witchlaugh.mp3");//load song/laugh into audio player
+  
+
+}
+
+void draw() {
+  scale(2);//increase dimensions by 2.  Not totally sure why this is in there.  Has something to do with resolution.
+  opencv.loadImage(video);//load live webcam video into face detection
+
+  image(video, 0, 0 );//load live image of user
+  noFill();//no fill or lines around bounding box
+  noStroke();
+  faces = opencv.detect();//detect a face
+  println(faces.length);//diagnostics
+
+  for (int i = 0; i < faces.length; i++) {//as long as it detects a face, do this..
+    println(faces[i].x + "," + faces[i].y);//diagnostics
+    rect(faces[i].x, faces[i].y, faces[i].width, faces[i].height);//make a box the size of the detected face
+    text("Happy Halloween!", 110, 180);//put some silly text in below the face
+    image(img,faces[i].x,faces[i].y);//superimposes witch's face on user
+  }
+  if (faces.length>0)//if a face is detected, play witch laugh
+  
+  {
+    player.play();
+ 
+  }
+   else
+   
+   {
+    player.rewind();//if no face detected, rewind the sound clip 
+   }
+}
+
+void captureEvent(Capture c) {
+  c.read();//read the video if one is available
+}
+
+void stop()
+{
+// close Minim audio classes
+player.close();
+// stop Minim before exiting
+minim.stop();
+// The super.stop() makes sure that all the normal cleanup routines are done
+super.stop();
+}
